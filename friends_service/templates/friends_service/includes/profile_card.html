@@ -1,0 +1,36 @@
+<div class='card bg-light' style="width: 50rem;">
+    <div class='card-body'>
+        <h3>{{ profile }}</h3>
+        {% if profile.user not in receivers and profile.user not in senders %}
+            <form action="{% url 'send_invite' %}" method='POST'>
+                {% csrf_token %}
+                <input type='hidden' name='profile_pk' value={{ profile.pk }}>
+                <button type='submit' class="btn btn-primary">Отправить заявку в друзья</button>
+            </form>
+
+        {% elif profile.user in senders and request.user not in profile.friends.all %}
+            <form action="{% url 'accept_invite' %}" method='POST'>
+                {% csrf_token %}
+                <input type='hidden' name='profile_pk' value={{ profile.pk }}>
+                <button type='submit' class="btn btn-success">Принять заявку в друзья</button>
+            </form>
+            <form action="{% url 'reject_invite' %}" method='POST'>
+                {% csrf_token %}
+                <input type='hidden' name='profile_pk' value={{ profile.pk }}>
+                <button type='submit' class="btn btn-warning">Отклонить заявку в друзья</button>
+            </form>
+        
+        {% elif profile.user in receivers and request.user not in profile.friends.all %}
+            <div>    
+                <button class="btn disabled" aria-disabled='True'>Ожидает подтверждения</button>
+            </div>
+
+        {% elif request.user in profile.friends.all %}
+            <form action="{% url 'delete_friend' %}" method='POST'>
+                {% csrf_token %}
+                <input type='hidden' name='profile_pk' value={{ profile.pk }}>
+                <button type='submit' class="btn btn-danger">Удалить из друзей</button>
+            </form>
+        {% endif %}
+    </div>
+</div>

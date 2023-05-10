@@ -1,13 +1,13 @@
 {% extends 'base.html' %}
 
 {% block title %}
-    Исходящие заявки
+    Друзья
 {% endblock %}
 
 {% block content %}
     <ul>
-        {% for invitation in invitations %}
-            <li>{{ invitation }}</li>
+        {% for profile in profiles %}
+            {% include "friends_service/includes/profile_card.html" %}
         {% endfor %}
     </ul>
 {% endblock %}

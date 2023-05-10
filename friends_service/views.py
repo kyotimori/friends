@@ -9,6 +9,7 @@ from django.db.models import Q
 
 # Create your views here.
 
+@login_required
 def profile(request):
     user_profile = Profile.objects.get(user=request.user)
     context = {'profile': user_profile}
@@ -16,29 +17,49 @@ def profile(request):
     return render(request, 'friends_service/profile.html', context)
 
 
-@login_required
-def send_request(request, user_id):
-    from_user = request.user
-    to_user = User.objects.get(id=user_id)
-    request, sent = Relationship.objects.get_or_create(from_user=from_user, to_user=to_user)
+# @login_required
+# def send_request(request, user_id):
+#     from_user = request.user
+#     to_user = User.objects.get(id=user_id)
+#     request, sent = Relationship.objects.get_or_create(from_user=from_user, to_user=to_user)
 
 
-@login_required
-def accept_request(request):
-    profile = Profile.objects.get(user=request.user)
-    invitations = Relationship.objects.received(profile)
-    context = {'invitations': invitations}
+# @login_required
+# def accept_request(request):
+#     profile = Profile.objects.get(user=request.user)
+#     invitations = Relationship.objects.received(profile)
+#     context = {'profiles': invitations}
 
-    return render(request, 'friends_service/invitations.html', context)
+#     return render(request, 'friends_service/invitations.html', context)
 
-
-def invite_profile_list(request):
+def friends_list(request):
     user = request.user
-    profiles = Profile.objects.get_all_profiles_to_invite(user)
+    profiles = Profile.objects.get_friends(user)
 
     context = {'profiles': profiles}
 
-    return render(request, 'friends_service/to_invite.html', context)
+    return render(request, 'friends_service/friends.html', context)
+
+
+def incoming_list(request):
+    to_user = Profile.objects.get(user=request.user)
+    senders = Relationship.objects.filter(to_user=to_user)
+
+    context = {'profiles': senders}
+
+    return render(request, 'friends_service/incoming.html', context)
+
+
+def outgoing_list(request):
+    from_user = Profile.objects.get(user=request.user)
+    invitations = Relationship.objects.filter(from_user=from_user)
+    receivers = []
+    for invitation in invitations:
+        receivers.append(invitation.to_user)
+
+    context = {'profiles': receivers}
+
+    return render(request, 'friends_service/outgoing.html', context)
 
 
 class ProfileListView(ListView):
@@ -76,6 +97,33 @@ def send_invitation(request):
         to_user = Profile.objects.get(pk=pk)
 
         relationship = Relationship.objects.create(from_user=from_user, to_user=to_user, status='send')
+        return redirect(request.META.get('HTTP_REFERER'))
+    return redirect('profile')
+
+
+def accept_invitation(request):
+    if request.method == 'POST':
+        pk = request.POST.get('profile_pk')
+        user = request.user
+        from_user = Profile.objects.get(pk=pk)
+        to_user = Profile.objects.get(user=user)
+
+        relationship = Relationship.objects.get(from_user=from_user, to_user=to_user)
+        relationship.status = 'accepted'
+        relationship.save()
+        return redirect(request.META.get('HTTP_REFERER'))
+    return redirect('profile')
+
+
+def reject_invitation(request):
+    if request.method == 'POST':
+        pk = request.POST.get('profile_pk')
+        user = request.user
+        from_user = Profile.objects.get(pk=pk)
+        to_user = Profile.objects.get(user=user)
+
+        relationship = Relationship.objects.get(Q(from_user=from_user) & Q(to_user=to_user))
+        relationship.delete()
         return redirect(request.META.get('HTTP_REFERER'))
     return redirect('profile')
 

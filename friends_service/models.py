@@ -5,30 +5,16 @@ from django.db.models import Q
 # Create your models here.
 
 class ProfileManager(models.Manager):
-    def get_all_profiles_to_invite(self, current_user):
-        profiles = Profile.objects.all().exclude(user=current_user)
-        profile = Profile.objects.get(user=current_user)
-        relationships = Relationship.objects.filter(Q(from_user=profile) | Q(to_user=profile))
-        print('##########')
-        print(relationships)
-
-        accepted = []
-        for rel in relationships:
-            if rel.status == 'accepted':
-                accepted.append(rel.from_user)
-                accepted.append(rel.to_user)
-        print('##########')
-        print(accepted)
-
-        available = [profile for profile in profiles if profile not in accepted]
-        print('##########')
-        print(available)
-        return available
-
-    
     def get_all_profiles(self, current_user):
         profiles = Profile.objects.all().exclude(user=current_user)
         return profiles
+    
+    def get_friends(self, current_user):
+        friends = Profile.objects.filter(friends=current_user)
+        return friends
+    
+    def get_friends_num(self):
+        return self.friends.all().count()
 
 
 class Profile(models.Model):
@@ -37,12 +23,6 @@ class Profile(models.Model):
 
     objects = ProfileManager()
 
-    def get_friends(self):
-        return self.friends.all()
-    
-    def get_friends_num(self):
-        return self.friends.all().count()
-    
     def __str__(self):
         return str(self.user.username)
 
