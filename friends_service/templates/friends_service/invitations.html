@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Исходящие заявки
+{% endblock %}
+
+{% block content %}
+    <ul>
+        {% for invitation in invitations %}
+            <li>{{ invitation }}</li>
+        {% endfor %}
+    </ul>
+{% endblock %}

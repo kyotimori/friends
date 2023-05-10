@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+
+{% block title %}
+    {{ profile.user }}
+{% endblock %}
+
+{% block content %}
+    <div class="content-section">
+        <div class="media">
+            <div class="media-body">
+                <h2 class="account-heading">{{ profile.user }}</h2>
+                <p>Друзья {{ profile.get_friends_num }}</p>
+                <ul>
+                    {% for friend in profile.get_friends %}
+                        <li>{{ friend }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+{% endblock content %}
