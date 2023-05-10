@@ -36,15 +36,16 @@ STATUS_CHOICES = (
 
 
 class RelationshipManager(models.Manager):
-    def incoming(self, current_user):
-        invitations = Relationship.objects.filter(to_user=current_user)
-        senders = [invitation.from_user.user for invitation in invitations if invitation.status == 'send']
-        return senders
+    pass
+    # def incoming(self, current_user):
+    #     invitations = Relationship.objects.filter(to_user=current_user)
+    #     senders = [invitation.from_user.user for invitation in invitations if invitation.status == 'send']
+    #     return senders
     
-    def outgoing(self, current_user):
-        invitations = Relationship.objects.filter(from_user=current_user)
-        receivers = [invitation.to_user.user for invitation in invitations if invitation.status == 'send']
-        return receivers
+    # def outgoing(self, current_user):
+    #     invitations = Relationship.objects.filter(from_user=current_user)
+    #     receivers = [invitation.to_user.user for invitation in invitations if invitation.status == 'send']
+    #     return receivers
 
 
 class Relationship(models.Model):
