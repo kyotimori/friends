@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+{% block content %}
+    <div class="content-section">
+        <div class="border-top pt-3">
+            <p>
+                Вы вышли из аккаунта <a class="ml-2" href="{% url 'login' %}">Войти</a>
+            </p>
+        </div>
+    </div>
+{% endblock content %}

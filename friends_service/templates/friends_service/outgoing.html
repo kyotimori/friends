@@ -1,13 +1,22 @@
 {% extends 'base.html' %}
 
 {% block title %}
-    Входящие заявки
+    Исходящие заявки
 {% endblock %}
 
 {% block content %}
     <ul>
-        {% for profile in profiles %}
-            {% include "friends_service/includes/profile_card.html" %}
+        {% for profile in receivers %}
+            <div class='card bg-light' style="width: 50rem;">
+                <div class='card-body'>
+                    <h3>{{ profile }}</h3>
+                    {% if request.user not in profile.friends.all %}    
+                        <div>    
+                            <button class="btn disabled" aria-disabled='True'>Ожидает подтверждения</button>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
         {% endfor %}
     </ul>
 {% endblock %}

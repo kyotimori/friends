@@ -6,15 +6,16 @@
 {% endblock %}
 
 {% block content %}
-    <ul class="nav nav-tabs">
-        <li class="nav-item">
-            <a class="nav-link active" href="{% url 'friends' %}">Друзья</a>
+    <ul class="list-group">
+        <li class="list-group-item">
+            <a href="{% url 'friends' %}">Друзья</a>
+            <span class="tag tag-default tag-pill pull-xs-right">{{ friends_num }}</span>
         </li>
-        <li class="nav-item">
-            <a class="nav-link" href="{% url 'outgoing' %}">Исходящие заявки</a>
+        <li class="list-group-item">
+            <a href="{% url 'outgoing' %}">Исходящие заявки</a>
         </li>
-        <li class="nav-item">
-            <a class="nav-link" href="{% url 'incoming' %}">Входящие заявки</a>
+        <li class="list-group-item">
+            <a href="{% url 'incoming' %}">Входящие заявки</a>
         </li>
     </ul>
 {% endblock content %}
